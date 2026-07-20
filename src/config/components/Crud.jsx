@@ -6,7 +6,8 @@ import {
     addDoc, 
     deleteDoc, 
     doc,
-    onSnapshot
+    onSnapshot,
+    updateDoc
 } from "firebase/firestore";
 
 export default function Crud(){
@@ -16,6 +17,9 @@ export default function Crud(){
     const [newBook,setNewBook] = useState("");
     const [newDescription,setNewDescription] = useState("");
     const [newQuantity,setNewQuantity] = useState(0);
+
+    //update title
+    const [newName,setNewName] = useState("");
 
     useEffect(() => {
     // This listens to live updates in Firestore directly
@@ -78,6 +82,18 @@ export default function Crud(){
         }
 
     }
+       async function updateBook(id){
+        
+        try{
+            const bookDoc = doc(db,"books",id);
+            await updateDoc(bookDoc, {bookName: newName});
+            setNewBook("");
+        }
+        catch(err){
+            console.log(err);
+        }
+
+    }
     return <>
 
        <div className="container my-6">
@@ -91,6 +107,19 @@ export default function Crud(){
             delete
          
          </button>
+         {" "}
+         
+         <input type="text" placeholder="update name"
+         onChange={(e)=>setNewName(e.target.value)
+         } />
+         
+         {" "}
+
+         <button 
+         className="btn btn-primary"
+         onClick={()=>updateBook(m.id)}>
+            update
+         </button>
          
          </p>)}
         
@@ -98,6 +127,7 @@ export default function Crud(){
 
 
       <div className="container">
+            <h1>create new book</h1>
             <p>
                 <input type="text" name="" id="" placeholder="book name"
                 onChange={(e)=>setNewBook(e.target.value)}/>
@@ -120,8 +150,6 @@ export default function Crud(){
             </button>
 
       </div>
-
-
 
 
     </>
