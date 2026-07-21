@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { db } from "../firebase.config";
+import { auth,db } from "../firebase.config";
 import { 
     getDocs,
     collection, 
@@ -61,7 +61,8 @@ export default function Crud(){
         try{
             await addDoc(booksCollection, {
                 bookName: newBook, description: newDescription,
-                quantity: newQuantity
+                quantity: newQuantity,
+                userId: auth?.currentUser?.uid
             });
 
             getList();
@@ -96,35 +97,35 @@ export default function Crud(){
     }
     return <>
 
+       {auth?.currentUser?.email ?
        <div className="container my-6">
-         {books.map((m)=> <p key={m.id}>
-         
-            {m.bookName + " "}
+            {books.map((m)=> <p key={m.id}>
+            
+                {m.bookName + " "}
 
-         <button className="btn btn-danger"
-         onClick={()=>deleteBook(m.id)}>
-         
-            delete
-         
-         </button>
-         {" "}
-         
-         <input type="text" placeholder="update name"
-         onChange={(e)=>setNewName(e.target.value)
-         } />
-         
-         {" "}
+            <button className="btn btn-danger"
+            onClick={()=>deleteBook(m.id)}>
+            
+                delete
+            
+            </button>
+            {" "}
+            
+            <input type="text" placeholder="update name"
+            onChange={(e)=>setNewName(e.target.value)
+            } />
+            
+            {" "}
 
-         <button 
-         className="btn btn-primary"
-         onClick={()=>updateBook(m.id)}>
-            update
-         </button>
-         
-         </p>)}
-        
-       </div>
-
+            <button 
+            className="btn btn-primary"
+            onClick={()=>updateBook(m.id)}>
+                update
+            </button>
+            
+            </p>)}
+            
+        </div>:""}
 
       <div className="container">
             <h1>create new book</h1>
